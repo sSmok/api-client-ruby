@@ -14,10 +14,10 @@ require 'json'
 class Retailcrm
 
   def initialize(url, key)
-    @version = 3
+    @version = 5
     @url = "#{url}/api/v#{@version}/"
     @key = key
-    @params = { :apiKey => @key }
+    @params = { apiKey: @key }
     @filter = nil
     @ids = nil
   end
@@ -644,14 +644,14 @@ class Retailcrm
 end
 
 class Retailcrm::Response
-    attr_reader :status, :response
+  attr_reader :status, :response
 
-    def initialize(status, body)
-        @status = status
-        @response = body.empty? ? [] : JSON.parse(body)
-    end
+  def initialize(status, body)
+    @status = status
+    @response = body.empty? ? [] : JSON.parse(body)
+  end
 
-    def is_successfull?
-        @status.to_i < 400
-    end
+  def is_successfull?
+    @status.to_i < 400
+  end
 end

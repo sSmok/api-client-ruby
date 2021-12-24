@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
     s.name        = 'retailcrm'
-    s.version     = '1.1.2'
+    s.version     = '1.1.3'
     s.date        = '2016-03-07'
     s.summary     = 'RetailCRM Rest API client'
     s.description = 'Library for interact with RetailCRM API'
