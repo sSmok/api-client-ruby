@@ -612,6 +612,42 @@ class Retailcrm
     make_request(url)
   end
 
+  ##
+  # === Get loyalty accounts by filter
+  #
+  # Example:
+  #  >> Retailcrm.loyalty_accounts({email: 'test@example.com'}, 50, 2)
+  #  => {...}
+  #
+  # Arguments:
+  #   filter (Hash)
+  #   limit (Integer) (20|50|100)
+  #   page (Integer)
+  def loyalty_accounts(filter = nil, limit = 20, page = 1)
+    url = "#{@url}loyalty/accounts"
+    @params[:limit] = limit
+    @params[:page] = page
+    @filter = filter.to_a.map { |x| "filter[#{x[0]}]=#{x[1]}" }.join('&')
+    make_request(url)
+  end
+
+  ##
+  # ===  Create loyalty account
+  #
+  # Example:
+  #  >> Retailcrm.loyalty_accounts_create(loyalty_account)
+  #  => {...}
+  #
+  # Arguments:
+  #   loyalty_account (Array)
+  #   site (String)
+  def loyalty_accounts_create(loyalty_account, site = nil)
+    url = "#{@url}loyalty/account/create"
+    @params[:loyaltyAccount] = loyalty_account.to_json
+    @params[:site] = site
+    make_request(url, 'post')
+  end
+
   protected
 
   def make_request(url, method='get')
