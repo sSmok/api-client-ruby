@@ -167,6 +167,23 @@ class Retailcrm
   end
 
   ##
+  # === Apply bonuses in the loyalty program
+  #
+  # Example:
+  #  >> Retailcrm.loyalty_apply(loyalty_account)
+  #  => {...}
+  #
+  # Arguments:
+  #   order (Hash)
+  #   bonuses (Integer)
+  def loyalty_apply(order, bonuses = 0)
+    url = "#{@url}orders/loyalty/apply"
+    @params[:order] = order.to_json
+    @params[:bonuses] = bonuses.to_i
+    make_request(url, 'post')
+  end
+
+  ##
   # === Get customers by filter
   #
   # Example:
@@ -644,6 +661,26 @@ class Retailcrm
   def loyalty_accounts_create(loyalty_account, site = nil)
     url = "#{@url}loyalty/account/create"
     @params[:loyaltyAccount] = loyalty_account.to_json
+    @params[:site] = site
+    make_request(url, 'post')
+  end
+
+  ##
+  # ===  Credit bonuses to loyalty account
+  #
+  # Example:
+  #  >> Retailcrm.loyalty_account_credit(5433, 100, 'Comment')
+  #  => {...}
+  #
+  # Arguments:
+  #   loyalty_account_id (Integer)
+  #   amount (Integer)
+  #   comment (String)
+  #   site (String)
+  def loyalty_account_credit(loyalty_account_id, amount, comment = nil, site = nil)
+    url = "#{@url}loyalty/account/#{loyalty_account_id}/bonus/credit"
+    @params[:amount] = amount.to_json
+    @params[:comment] = comment
     @params[:site] = site
     make_request(url, 'post')
   end
