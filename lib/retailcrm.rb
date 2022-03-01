@@ -97,15 +97,17 @@ class Retailcrm
   # ===  Edit order
   #
   # Example:
-  #  >> Retailcrm.orders_edit(order)
+  #  >> Retailcrm.orders_edit(44533, order)
   #  => {...}
   #
   # Arguments:
+  #   id (String)
   #   order (Array)
+  #   by (String)
   #   site (String)
-  def orders_edit(order, site = nil)
-    id = order[:externalId]
+  def orders_edit(id, order, by = 'id', site = nil)
     url = "#{@url}orders/#{id}/edit"
+    @params[:by] = by
     @params[:order] = order.to_json
     @params[:site] = site
     make_request(url, 'post')
