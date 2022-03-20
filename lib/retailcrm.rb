@@ -671,19 +671,15 @@ class Retailcrm
   # ===  Credit bonuses to loyalty account
   #
   # Example:
-  #  >> Retailcrm.loyalty_account_credit(5433, 100, 'Comment')
+  #  >> Retailcrm.loyalty_account_credit(5433, {amount: 100, comment: 'Comment'})
   #  => {...}
   #
   # Arguments:
   #   loyalty_account_id (Integer)
-  #   amount (Integer)
-  #   comment (String)
-  #   site (String)
-  def loyalty_account_credit(loyalty_account_id, amount, comment = nil, site = nil)
+  #   loyalty_params (Hash)
+  def loyalty_account_credit(loyalty_account_id, loyalty_params = {})
     url = "#{@url}loyalty/account/#{loyalty_account_id}/bonus/credit"
-    @params[:amount] = amount.to_json
-    @params[:comment] = comment
-    @params[:site] = site
+    @params.merge!(loyalty_params)
     make_request(url, 'post')
   end
 
