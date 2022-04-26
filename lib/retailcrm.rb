@@ -683,6 +683,26 @@ class Retailcrm
     make_request(url, 'post')
   end
 
+  ##
+  # ===  Get operations for loyalty account
+  #
+  # Example:
+  #  >> Retailcrm.loyalty_account_operations(5433, {createdAtFrom: '20-03-2022', createdAtTo: '20-03-2022'})
+  #  => {...}
+  #
+  # Arguments:
+  #   loyalty_account_id (Integer)
+  #   filter (Hash)
+  #   limit (Integer) (20|50|100)
+  #   offset (Integer)
+  def loyalty_account_operations(loyalty_account_id, filter = {}, limit = 100, page = 1)
+    url = "#{@url}loyalty/account/#{loyalty_account_id}/bonus/operations"
+    @params[:limit] = limit
+    @params[:page] = page
+    @params.merge!(filter)
+    make_request(url)
+  end
+
   protected
 
   def make_request(url, method='get')
