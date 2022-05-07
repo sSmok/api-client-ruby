@@ -311,6 +311,25 @@ class Retailcrm
   end
 
   ##
+  # === Get products
+  #
+  # Example:
+  #  >> Retailcrm.store_products({:xmlId => 26120, :active => 1}, 50, 2)
+  #  => {...}
+  #
+  # Arguments:
+  #   filter (Hash)
+  #   limit (Integer) (20|50|100)
+  #   page (Integer)
+  def store_products(filter = nil, limit = 20, page = 1)
+    url = "#{@url}store/products"
+    @params[:limit] = limit
+    @params[:page] = page
+    @filter = filter.to_a.map { |x| "filter[#{x[0]}]=#{x[1]}" }.join('&')
+    make_request(url)
+  end
+
+  ##
   # === Set purchace prices & stock balance
   #
   # Example:
