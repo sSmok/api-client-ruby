@@ -245,15 +245,17 @@ class Retailcrm
   # ===  Edit customer
   #
   # Example:
-  #  >> Retailcrm.customers_edit(customer)
+  #  >> Retailcrm.customers_edit(id, customer)
   #  => {...}
   #
   # Arguments:
+  #   id (Integer)
   #   customer (Array)
+  #   by (String)
   #   site (String)
-  def customers_edit(customer, site = nil)
-    id = customer[:externalId]
+  def customers_edit(id, customer, by = 'id', site = nil)
     url = "#{@url}customers/#{id}/edit"
+    @params[:by] = by
     @params[:customer] = customer.to_json
     @params[:site] = site
     make_request(url, 'post')
