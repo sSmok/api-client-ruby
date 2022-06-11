@@ -653,6 +653,22 @@ class Retailcrm
   end
 
   ##
+  # ===  Get loyalty account by id
+  #
+  # Example:
+  #  >> Retailcrm.loyalty_accounts_get(345)
+  #  => {...}
+  #
+  # Arguments:
+  #   id (Integer)
+  #   site (String)
+  def loyalty_accounts_get(id, site = nil)
+    url = "#{@url}loyalty/account/#{id}"
+    @params[:site] = site
+    make_request(url)
+  end
+
+  ##
   # === Get loyalty accounts by filter
   #
   # Example:
