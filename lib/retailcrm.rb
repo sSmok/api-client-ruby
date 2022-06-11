@@ -26,18 +26,27 @@ class Retailcrm
   # === Get orders by filter
   #
   # Example:
-  #  >> Retailcrm.orders({:email => 'test@example.com', :status => 'new'}, 50, 2)
+  #  >> Retailcrm.orders({:email => 'test@example.com', :status => 'new'}, {shop_id: 22} 50, 2)
   #  => {...}
   #
   # Arguments:
   #   filter (Hash)
+  #   custom_fields (Hash)
   #   limit (Integer) (20|50|100)
   #   page (Integer)
-  def orders(filter = nil, limit = 20, page = 1)
+  def orders(filter = nil, custom_fields = nil, limit = 20, page = 1)
     url = "#{@url}orders"
     @params[:limit] = limit
     @params[:page] = page
     @filter = filter.to_a.map { |x| "filter[#{x[0]}]=#{x[1]}" }.join('&')
+    custom_filter = custom_fields.map do |key, value|
+      if value.is_a?(Hash)
+        value.map { |sub_key, sub_value| "&filter[customFields][#{key}][#{sub_key}]=#{sub_value}" }.join
+      else
+        "&filter[customFields][#{key}]=#{value}"
+      end
+    end.join
+    @filter << custom_filter
     make_request(url)
   end
 
