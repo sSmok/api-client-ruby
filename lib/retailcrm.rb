@@ -358,6 +358,23 @@ class Retailcrm
   end
 
   ##
+  # === Set purchace prices
+  #
+  # Example:
+  #  >> Retailcrm.store_prices_upload({:prices => [{:externalId => 123, :stores => [{:code => 'store_1', :available => 15, :purchasePrice => 1000}]}]}, :site => 'main_site')
+  #  => {...}
+  #
+  # Arguments:
+  #   prices (Array)
+  #   site (String)
+  def store_prices_upload(prices = [], site = nil)
+    url = "#{@url}store/prices/upload"
+    @params[:prices] = prices.to_json
+    @params[:site] = site
+    make_request(url, 'post')
+  end
+
+  ##
   # === Get packs by filter
   #
   # Example:
