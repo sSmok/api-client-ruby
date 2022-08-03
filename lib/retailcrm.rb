@@ -20,6 +20,7 @@ class Retailcrm
     @params = { apiKey: @key }
     @filter = nil
     @ids = nil
+    @logger = Logger.new('log/retailcrm.log')
   end
 
   ##
@@ -773,6 +774,7 @@ class Retailcrm
     uri = URI.parse(url)
     https = Net::HTTP.new(uri.host, uri.port)
     https.use_ssl = true
+    https.set_debug_output(@logger)
 
     if method == 'post'
       request = Net::HTTP::Post.new(uri)
