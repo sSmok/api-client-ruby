@@ -27,7 +27,7 @@ class Retailcrm
   # === Get orders by filter
   #
   # Example:
-  #  >> Retailcrm.orders({:email => 'test@example.com', :status => 'new'}, {shop_id: 22} 50, 2)
+  #  >> Retailcrm.orders({:email => 'test@example.com', :status => 'new'}, {shop_id: 22}, 50, 2)
   #  => {...}
   #
   # Arguments:
@@ -40,14 +40,7 @@ class Retailcrm
     @params[:limit] = limit
     @params[:page] = page
     @filter = filter.to_a.map { |x| "filter[#{x[0]}]=#{x[1]}" }.join('&')
-    custom_filter = custom_fields.map do |key, value|
-      if value.is_a?(Hash)
-        value.map { |sub_key, sub_value| "&filter[customFields][#{key}][#{sub_key}]=#{sub_value}" }.join
-      else
-        "&filter[customFields][#{key}]=#{value}"
-      end
-    end.join
-    @filter << custom_filter
+    @filter << @filter << prepare_custom_fields(custom_fields)
     make_request(url)
   end
 
@@ -199,18 +192,20 @@ class Retailcrm
   # === Get customers by filter
   #
   # Example:
-  #  >> Retailcrm.customers({:email => 'test@example.com'}, 50, 2)
+  #  >> Retailcrm.customers({:email => 'test@example.com'}, {shop_id: 22}, 50, 2)
   #  => {...}
   #
   # Arguments:
   #   filter (Hash)
+  #   custom_fields (Hash)
   #   limit (Integer) (20|50|100)
   #   page (Integer)
-  def customers(filter = nil, limit = 20, page = 1)
+  def customers(filter = nil, custom_fields = nil, limit = 20, page = 1)
     url = "#{@url}customers"
     @params[:limit] = limit
     @params[:page] = page
     @filter = filter.to_a.map { |x| "filter[#{x[0]}]=#{x[1]}" }.join('&')
+    @filter << prepare_custom_fields(custom_fields)
     make_request(url)
   end
 
@@ -796,6 +791,18 @@ class Retailcrm
     end
     response = https.request(request)
     Retailcrm::Response.new(response.code, response.body)
+  end
+
+  private
+
+  def prepare_custom_fields(fields)
+    fields.map do |key, value|
+      if value.is_a?(Hash)
+        value.map { |sub_key, sub_value| "&filter[customFields][#{key}][#{sub_key}]=#{sub_value}" }.join
+      else
+        "&filter[customFields][#{key}]=#{value}"
+      end
+    end.join
   end
 end
 
