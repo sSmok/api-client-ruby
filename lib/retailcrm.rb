@@ -40,7 +40,7 @@ class Retailcrm
     @params[:limit] = limit
     @params[:page] = page
     @filter = filter.to_a.map { |x| "filter[#{x[0]}]=#{x[1]}" }.join('&')
-    @filter << @filter << prepare_custom_fields(custom_fields)
+    @filter << prepare_custom_fields(custom_fields)
     make_request(url)
   end
 
@@ -796,7 +796,7 @@ class Retailcrm
   private
 
   def prepare_custom_fields(fields)
-    fields.map do |key, value|
+    fields.to_h.map do |key, value|
       if value.is_a?(Hash)
         value.map { |sub_key, sub_value| "&filter[customFields][#{key}][#{sub_key}]=#{sub_value}" }.join
       else
