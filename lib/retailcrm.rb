@@ -39,7 +39,7 @@ class Retailcrm
     url = "#{@url}orders"
     @params[:limit] = limit
     @params[:page] = page
-    @filter = filter.to_a.map { |x| "filter[#{x[0]}]=#{x[1]}" }.join('&')
+    @filter = prepare_filter(filter)
     @filter << prepare_custom_fields(custom_fields)
     make_request(url)
   end
@@ -204,7 +204,7 @@ class Retailcrm
     url = "#{@url}customers"
     @params[:limit] = limit
     @params[:page] = page
-    @filter = filter.to_a.map { |x| "filter[#{x[0]}]=#{x[1]}" }.join('&')
+    @filter = prepare_filter(filter)
     @filter << prepare_custom_fields(custom_fields)
     make_request(url)
   end
@@ -313,7 +313,7 @@ class Retailcrm
     url = "#{@url}store/inventories"
     @params[:limit] = limit
     @params[:page] = page
-    @filter = filter.to_a.map { |x| "filter[#{x[0]}]=#{x[1]}" }.join('&')
+    @filter = prepare_filter(filter)
     make_request(url)
   end
 
@@ -332,7 +332,7 @@ class Retailcrm
     url = "#{@url}store/products"
     @params[:limit] = limit
     @params[:page] = page
-    @filter = filter.to_a.map { |x| "filter[#{x[0]}]=#{x[1]}" }.join('&')
+    @filter = prepare_filter(filter)
     make_request(url)
   end
 
@@ -385,7 +385,7 @@ class Retailcrm
     url = "#{@url}orders/packs"
     @params[:limit] = limit
     @params[:page] = page
-    @filter = filter.to_a.map { |x| "filter[#{x[0]}]=#{x[1]}" }.join('&')
+    @filter = prepare_filter(filter)
     make_request(url)
   end
 
@@ -421,7 +421,7 @@ class Retailcrm
     url = "#{@url}orders/packs/history"
     @params[:limit] = limit
     @params[:page] = page
-    @filter = filter.to_a.map { |x| "filter[#{x[0]}]=#{x[1]}" }.join('&')
+    @filter = prepare_filter(filter)
     make_request(url)
   end
 
@@ -705,7 +705,7 @@ class Retailcrm
     url = "#{@url}loyalty/accounts"
     @params[:limit] = limit
     @params[:page] = page
-    @filter = filter.to_a.map { |x| "filter[#{x[0]}]=#{x[1]}" }.join('&')
+    @filter = prepare_filter(filter)
     make_request(url)
   end
 
@@ -803,6 +803,18 @@ class Retailcrm
         "&filter[customFields][#{key}]=#{value}"
       end
     end.join
+  end
+
+  def prepare_filter(filter)
+    filter.to_a.map do |item|
+      key = item[0]
+      value = item[1]
+      if value.is_a?(Array)
+        value.map { |sub_value| "filter[#{key}][]=#{sub_value}" }.join('&')
+      else
+        "filter[#{key}]=#{value}"
+      end
+    end.join('&')
   end
 end
 
