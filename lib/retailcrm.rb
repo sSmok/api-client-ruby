@@ -762,6 +762,24 @@ class Retailcrm
     make_request(url)
   end
 
+  ##
+  # ===  Calculation of the discount
+  #
+  # Example:
+  #  >> Retailcrm.loyalty_calculate(order)
+  #  => {...}
+  #
+  # Arguments:
+  #   order (Hash)
+  #   site (String)
+  def loyalty_calculate(order, bonuses = 0, site = nil)
+    url = "#{@url}loyalty/calculate"
+    @params[:order] = order.to_json
+    @params[:bonuses] = bonuses
+    @params[:site] = site
+    make_request(url, 'post')
+  end
+
   protected
 
   def make_request(url, method='get')
