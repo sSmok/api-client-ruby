@@ -20,7 +20,6 @@ class Retailcrm
     @params = { apiKey: @key }
     @filter = nil
     @ids = nil
-    @logger = Logger.new('log/retailcrm.log')
   end
 
   ##
@@ -787,7 +786,10 @@ class Retailcrm
     uri = URI.parse(url)
     https = Net::HTTP.new(uri.host, uri.port)
     https.use_ssl = true
-    https.set_debug_output(@logger)
+    log_data = {
+      url: uri.to_s,
+      body: @params
+    }
 
     if method == 'post'
       request = Net::HTTP::Post.new(uri)
@@ -805,9 +807,14 @@ class Retailcrm
         data = data + "&#{@ids}"
       end
 
+      log_data[:query_params] = data
       request = Net::HTTP::Get.new("#{uri.path}?#{data}")
     end
+    log_data[:method] = request.method
+
+    log_message("[REQUEST] method: #{log_data[:method]}; url: #{log_data[:url]}; body: #{log_data[:body]}; query_params: #{log_data[:query_params]};")
     response = https.request(request)
+    log_message("[RESPONSE] code: #{response.code}; body: #{response.body.to_s.force_encoding('UTF-8')};")
     Retailcrm::Response.new(response.code, response.body)
   end
 
@@ -833,6 +840,15 @@ class Retailcrm
         "filter[#{key}]=#{value}"
       end
     end.join('&')
+  end
+
+  def log_message(txt)
+    logger.tagged('LOG_RETAILCRM').info(txt)
+  end
+
+  def logger
+    log_path = "#{Rails.root}/log/retailcrm.log"
+    @logger ||= ActiveSupport::TaggedLogging.new(Logger.new(log_path))
   end
 end
 
